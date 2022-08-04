@@ -1,27 +1,26 @@
-import 'package:bloc_study/bloc_provider.dart';
-import 'package:bloc_study/increment_bloc.dart';
 import 'package:flutter/material.dart';
 
+import 'bloc/increment_bloc.dart';
+
 class CounterPage extends StatelessWidget {
+  final bloc = IncrementBloc();
+
   @override
   Widget build(BuildContext context) {
-    final IncrementBloc bloc = BlocProvider.of<IncrementBloc>(context);
-
     return Scaffold(
       appBar: AppBar(title: Text('Stream version of the Counter App')),
       body: Center(
-        child: StreamBuilder<int>(
-            stream: bloc.outCounter,
-            initialData: 0,
-            builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
+        child: StreamBuilder<IncrementState>(
+            stream: bloc.stream,
+            builder: (context, snapshot) {
               print('snashot data : ${snapshot.data}');
-              return Text('You hit me: ${snapshot.data} times');
+              return Text('You hit me: ${snapshot.data?.count} times');
             }),
       ),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
         onPressed: () {
-          bloc.incrementCounter.add(null);
+          bloc.add(AddEvent());
         },
       ),
     );
